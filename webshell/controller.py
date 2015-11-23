@@ -1,12 +1,8 @@
 from __future__ import unicode_literals
-from bottle import request, response, post, route, static_file
+from bottle import request, response, post, get, route
 import subprocess
 import json
-import socket
-import time
-import os
-import hashlib
-from model import jobs
+from model import jobs, generate_id
 
 def enable_cors(fn):
     def _enable_cors(*args, **kwargs):
@@ -21,18 +17,12 @@ def enable_cors(fn):
 
     return _enable_cors
 
-@route('/static/<filename>')
-def server_static(filename):
-    return static_file(filename, root='webshell/static')
-
 @post("/api/command")
 def run_command_form():
-	command = request.forms.get("command")
+	return start_job(request.forms.get("command"))
 
-	job_id = start_job(command)
-
-	return job_id
-
+# TODO: Start run_command in a thread
+# FIXME: Make sure jobs table modifications get moved into model.py
 def start_job(command):
 
 	# Generate id
@@ -41,19 +31,20 @@ def start_job(command):
 	# Use id as key for storing execution status and stdout/stderr/exitcode
 	jobs[job_id] = "Queued"
 
+	# TODO: Start me in a separate thread
 	run_command(job_id, command)
+
 	return { 'job_id' : job_id }
 
+# TODO: Start thread, and join, figure out reasonable way to have running stdout, for polling
 def run_command(job_id, command):
-	print jobs[job_id]
-	print command
+	pass
+	#print jobs[job_id]
+	#print command
 
+@get("/api/status/<job_id>")
+def get_job_id_status(job_id):
+	pass
+	# { jobid: ..., status: running, }
+	# { jobid: ..., status: finished, exitcode: ..., stdout: ..., stderr: ...}
 
-def generate_id() :
-	hostname = socket.gethostname()
-	timestamp = time.time()
-	salt = str(os.urandom(1)).encode('base-64')
-	key = "{0}{1}{2}".format(hostname, timestamp, salt)
-
-	return hashlib.sha512(key.encode('utf-8')).hexdigest()
-		
