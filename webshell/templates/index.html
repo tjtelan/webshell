@@ -3,4 +3,10 @@
 {% block head %}
 {% endblock %}
 {% block content %}
+<form id="myForm" action="/api/command" method="post">
+    <input name="command"></input>
+    <input type="submit" value="submit"></input>
+</form>
+<div id="command"></div>
+<div id="response"></div>
 {% endblock %}
