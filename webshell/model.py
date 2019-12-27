@@ -3,13 +3,14 @@ import socket
 import time
 import os
 import hashlib
+import base64
 
 jobs = dict()
 
 def generate_id():
 	hostname = socket.gethostname()
 	timestamp = time.time()
-	salt = str(os.urandom(1)).encode('base-64')
+	salt = base64.b64encode(os.urandom(1))
 	key = "{0}{1}{2}".format(hostname, timestamp, salt)
 
 	return hashlib.sha512(key.encode('utf-8')).hexdigest()

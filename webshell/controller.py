@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from bottle import request, response, post, get, route
 import subprocess
 import json
-from model import jobs, generate_id
+from webshell.model import jobs, generate_id
 
 def enable_cors(fn):
     def _enable_cors(*args, **kwargs):
