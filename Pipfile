@@ -6,7 +6,7 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-bottle = "==0.12.9"
+bottle = "==0.12.20"
 decorator = "==4.0.4"
 ipython = "==4.0.0"
 pexpect = "==4.0.1"
